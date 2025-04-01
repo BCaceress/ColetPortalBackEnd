@@ -7,10 +7,59 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User{
-  id Int @id @default(autoincrement())
-  name String
-  email  String @unique
-  password  String
-  role String
+model Usuario {
+  id       Int      @id @default(autoincrement())
+  nome     String
+  email    String   @unique
+  senha    String
+  funcao   String
+  clientes Cliente[]
+
+  @@map("usuarios")
+}
+
+model Cliente {
+  id_cliente            Int       @id @default(autoincrement())
+  fl_ativo              Boolean
+  ds_nome               String
+  ds_razao_social       String
+  nr_cnpj               String
+  nr_inscricao_estadual String
+  ds_site               String?
+  dt_data               DateTime  @default(now())
+  tx_observacoes        String?
+  ds_endereco           String
+  ds_cep                String
+  ds_uf                 String
+  ds_cidade             String
+  ds_bairro             String
+  nr_numero             String
+  ds_complemento        String?
+  nr_codigo_ibge        String?
+  nr_latitude           Float?
+  nr_longitude          Float?
+  nr_distancia_km       Float?
+  id_usuario            Int       @default(1)
+  usuario               Usuario   @relation(fields: [id_usuario], references: [id])
+
+  contatos              Contato[]
+
+  @@map("clientes")
+}
+
+model Contato {
+  id_contato            Int       @id @default(autoincrement())
+  ds_nome               String
+  ds_cargo              String
+  fl_ativo              Boolean
+  tx_observacoes        String?
+  ds_email              String
+  ds_telefone           String
+  fl_whatsapp           Boolean
+
+  id_cliente            Int
+  cliente               Cliente   @relation(fields: [id_cliente], references: [id_cliente])
+
+  @@index([id_cliente])
+  @@map("contatos")
 }
