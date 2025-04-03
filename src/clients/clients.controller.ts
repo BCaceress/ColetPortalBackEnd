@@ -21,8 +21,12 @@ export class ClientsController {
     constructor(private readonly clientsService: ClientsService) { }
 
     @Get()
-    findAll(@Request() req) {
-        return this.clientsService.findAll(req.user.id);
+    async findAll(@Request() req) {
+        console.log('GET /clients or /clientes endpoint hit');
+        console.log('User in request:', req.user);
+        const clients = await this.clientsService.findAll(req.user.id);
+        console.log(`Returning ${clients.length} clients from controller`);
+        return clients;
     }
 
     @Get(':id')
@@ -47,5 +51,31 @@ export class ClientsController {
     @Delete(':id')
     remove(@Param('id', ParseIntPipe) id: number, @Request() req) {
         return this.clientsService.remove(id, req.user.id);
+    }
+
+    @Get(':id/contacts')
+    getClientContacts(
+        @Param('id', ParseIntPipe) id: number,
+        @Request() req
+    ) {
+        return this.clientsService.getClientContacts(id, req.user.id);
+    }
+
+    @Post(':id/contacts/:contactId')
+    addContactToClient(
+        @Param('id', ParseIntPipe) id: number,
+        @Param('contactId', ParseIntPipe) contactId: number,
+        @Request() req
+    ) {
+        return this.clientsService.addContactToClient(id, contactId, req.user.id);
+    }
+
+    @Delete(':id/contacts/:contactId')
+    removeContactFromClient(
+        @Param('id', ParseIntPipe) id: number,
+        @Param('contactId', ParseIntPipe) contactId: number,
+        @Request() req
+    ) {
+        return this.clientsService.removeContactFromClient(id, contactId, req.user.id);
     }
 }

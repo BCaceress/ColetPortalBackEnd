@@ -22,9 +22,18 @@ export class ContactsController {
 
     // Legacy routes for backward compatibility
     @Get('contacts')
-    findAllContactsLegacy(@Request() req) {
+    async findAllContactsLegacy(@Request() req) {
         console.log('Hit findAllContactsLegacy route');
-        return this.contactsService.findAllForUser(req.user.id);
+        console.log('User in request:', req.user);
+
+        if (!req.user || !req.user.id) {
+            console.error('User ID is missing in request');
+            return [];
+        }
+
+        const contacts = await this.contactsService.findAllForUser(req.user.id);
+        console.log(`Returning ${contacts.length} contacts from controller`);
+        return contacts;
     }
 
     @Get('contacts/:id')
@@ -62,8 +71,18 @@ export class ContactsController {
 
     // Add a global route to get all contacts for the user
     @Get('contatos')
-    findAllContacts(@Request() req) {
-        return this.contactsService.findAllForUser(req.user.id);
+    async findAllContacts(@Request() req) {
+        console.log('Hit findAllContacts route');
+        console.log('User in request:', req.user);
+
+        if (!req.user || !req.user.id) {
+            console.error('User ID is missing in request');
+            return [];
+        }
+
+        const contacts = await this.contactsService.findAllForUser(req.user.id);
+        console.log(`Returning ${contacts.length} contacts from controller`);
+        return contacts;
     }
 
     // Nested routes for specific client's contacts

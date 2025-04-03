@@ -31,7 +31,7 @@ export class AuthService {
         });
 
         return {
-            id: user.id,
+            id_usuario: user.id_usuario,
             email: user.email,
             name: user.nome,
             role: user.funcao
@@ -55,12 +55,22 @@ export class AuthService {
             throw new UnauthorizedException('Invalid credentials');
         }
 
-        const accessToken = await this.jwtService.signAsync({
-            id: user.id,
+        // Create a consistent user object for the JWT
+        const userPayload = {
+            id: user.id_usuario, // Use consistent property name
+            id_usuario: user.id_usuario, // Keep original for backward compatibility
             email: user.email,
             name: user.nome,
             role: user.funcao
+        };
+
+        console.log('User authenticated successfully:', {
+            id: user.id_usuario,
+            email: user.email,
+            role: user.funcao
         });
+
+        const accessToken = await this.jwtService.signAsync(userPayload);
 
         return { accessToken };
     }

@@ -8,12 +8,12 @@ datasource db {
 }
 
 model Usuario {
-  id       Int      @id @default(autoincrement())
-  nome     String
-  email    String   @unique
-  senha    String
-  funcao   String
-  clientes Cliente[]
+  id_usuario  Int      @id @default(autoincrement())
+  nome        String
+  email       String   @unique
+  senha       String
+  funcao      String
+  rats        RAT[]
 
   @@map("usuarios")
 }
@@ -26,8 +26,6 @@ model Cliente {
   nr_cnpj               String
   nr_inscricao_estadual String
   ds_site               String?
-  dt_data               DateTime  @default(now())
-  tx_observacoes        String?
   ds_endereco           String
   ds_cep                String
   ds_uf                 String
@@ -39,10 +37,29 @@ model Cliente {
   nr_latitude           Float?
   nr_longitude          Float?
   nr_distancia_km       Float?
-  id_usuario            Int       @default(1)
-  usuario               Usuario   @relation(fields: [id_usuario], references: [id])
-
-  contatos              Contato[]
+  tx_observacao_ident   String?
+  fl_matriz             Boolean
+  ds_situacao           String
+  ds_sistema            String
+  ds_contrato           String
+  nr_nomeados           Int
+  nr_simultaneos        Int
+  nr_tecnica_remoto     Float?
+  nr_tecnica_presencial Float?
+  tm_minimo_horas       DateTime  @db.Time()
+  ds_diario_viagem      String
+  ds_regiao             String
+  tx_observacao_contrato String
+  nr_codigo_zz          Int
+  nr_franquia_nf        Float
+  nr_qtde_documentos    Int
+  nr_valor_franqia      Float
+  nr_valor_excendente   Float
+  dt_data_contrato      DateTime  @db.Date()
+  
+  clientesContatos      ClienteContato[]
+  emails                EmailCliente[]
+  rats                  RAT[]
 
   @@map("clientes")
 }
@@ -56,10 +73,68 @@ model Contato {
   ds_email              String
   ds_telefone           String
   fl_whatsapp           Boolean
+  
+  clientesContatos      ClienteContato[]
+  rats                  RAT[]
 
+  @@map("contatos")
+}
+
+// Junction table for many-to-many relationship between Cliente and Contato
+model ClienteContato {
+  id                    Int       @id @default(autoincrement())
+  
+  id_cliente            Int
+  cliente               Cliente   @relation(fields: [id_cliente], references: [id_cliente])
+  
+  id_contato            Int
+  contato               Contato   @relation(fields: [id_contato], references: [id_contato])
+
+  @@unique([id_cliente, id_contato], name: "id_cliente_id_contato")
+  @@index([id_cliente])
+  @@index([id_contato])
+  @@map("clientes_contatos")
+}
+
+model EmailCliente {
+  id                    Int       @id @default(autoincrement())
+  ds_email              String
+  
   id_cliente            Int
   cliente               Cliente   @relation(fields: [id_cliente], references: [id_cliente])
 
   @@index([id_cliente])
-  @@map("contatos")
+  @@map("emails_cliente")
+}
+
+model RAT {
+  id_rat                Int       @id @default(autoincrement())
+  ds_status             String
+  fl_deslocamento       String    // 'S' ou 'N'
+  dt_data_hora_entrada  DateTime
+  dt_data_hora_saida    DateTime
+  tm_duracao            DateTime  @db.Time()
+  tx_comentario_interno String    // Textarea comment
+  ds_originada          String
+  ds_observacao         String
+  nr_km_ida             Int?
+  nr_km_volta           Int?
+  nr_valor_pedagio      Float?
+  tx_atividades         String    // Textarea comment
+  tx_tarefas            String    // Textarea comment
+  tx_pendencias         String    // Textarea comment
+
+  id_usuario            Int
+  usuario               Usuario   @relation(fields: [id_usuario], references: [id_usuario])
+  
+  id_cliente            Int
+  cliente               Cliente   @relation(fields: [id_cliente], references: [id_cliente])
+  
+  id_contato            Int
+  contato               Contato   @relation(fields: [id_contato], references: [id_contato])
+
+  @@index([id_usuario])
+  @@index([id_cliente])
+  @@index([id_contato])
+  @@map("rats")
 }

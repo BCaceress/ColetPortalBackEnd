@@ -27,8 +27,23 @@ export class AuthGuard implements CanActivate {
                 secret: jwtConstants.secret,
             });
 
+            // Ensure the user ID property is consistent (from id_usuario to id)
+            if (payload.id_usuario && !payload.id) {
+                payload.id = payload.id_usuario;
+            } else if (!payload.id && !payload.id_usuario) {
+                console.error('JWT payload missing both id and id_usuario:', payload);
+                throw new UnauthorizedException('Invalid user identity in token');
+            }
+
+            console.log('User authenticated:', {
+                id: payload.id,
+                email: payload.email,
+                role: payload.role || payload.funcao
+            });
+
             request['user'] = payload;
-        } catch {
+        } catch (error) {
+            console.error('JWT verification error:', error);
             throw new UnauthorizedException('Invalid access token');
         }
         return true;

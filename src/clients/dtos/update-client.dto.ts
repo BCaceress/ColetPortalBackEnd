@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsBoolean, IsNumber, IsOptional, IsString, MaxLength } from 'class-validator';
+import { IsBoolean, IsDate, IsNumber, IsOptional, IsString, MaxLength } from 'class-validator';
 
 export class UpdateClientDto {
     @IsOptional()
@@ -29,7 +29,7 @@ export class UpdateClientDto {
 
     @IsOptional()
     @IsString()
-    tx_observacoes?: string;
+    tx_observacao_ident?: string;
 
     @IsOptional()
     @IsString()
@@ -89,4 +89,86 @@ export class UpdateClientDto {
     @IsOptional()
     @IsBoolean()
     fl_ativo?: boolean;
+
+    @IsOptional()
+    @IsBoolean()
+    fl_matriz?: boolean;
+
+    @IsOptional()
+    @IsString()
+    ds_situacao?: string;
+
+    @IsOptional()
+    @IsString()
+    ds_sistema?: string;
+
+    @IsOptional()
+    @IsString()
+    ds_contrato?: string;
+
+    @IsOptional()
+    @IsNumber()
+    @Type(() => Number)
+    nr_nomeados?: number;
+
+    @IsOptional()
+    @IsNumber()
+    @Type(() => Number)
+    nr_simultaneos?: number;
+
+    @IsOptional()
+    @IsNumber()
+    @Type(() => Number)
+    nr_tecnica_remoto?: number;
+
+    @IsOptional()
+    @IsNumber()
+    @Type(() => Number)
+    nr_tecnica_presencial?: number;
+
+    @IsOptional()
+    @IsString()
+    tm_minimo_horas?: string; // Format as HH:MM:SS
+
+    @IsOptional()
+    @IsString()
+    ds_diario_viagem?: string;
+
+    @IsOptional()
+    @IsString()
+    ds_regiao?: string;
+
+    @IsOptional()
+    @IsString()
+    tx_observacao_contrato?: string;
+
+    @IsOptional()
+    @IsNumber()
+    @Type(() => Number)
+    nr_codigo_zz?: number;
+
+    @IsOptional()
+    @IsNumber()
+    @Type(() => Number)
+    nr_franquia_nf?: number;
+
+    @IsOptional()
+    @IsNumber()
+    @Type(() => Number)
+    nr_qtde_documentos?: number;
+
+    @IsOptional()
+    @IsNumber()
+    @Type(() => Number)
+    nr_valor_franqia?: number;
+
+    @IsOptional()
+    @IsNumber()
+    @Type(() => Number)
+    nr_valor_excendente?: number;
+
+    @IsOptional()
+    @IsDate()
+    @Type(() => Date)
+    dt_data_contrato?: Date;
 }
